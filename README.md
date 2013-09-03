@@ -16,12 +16,16 @@
       "ru.myscala" % "sapsan_2.10" % "0.1"
     )
 ```
-  а также добавте в этот же файл ссылку на репозиторий Сапсана:
+  также добавьте в этот же файл ссылку на репозиторий Сапсана:
 ```
   val main = play.Project(appName, appVersion, appDependencies).settings(
-	resolvers += Resolver.url("My GitHub Play Repository", url("http://rumataestorsky.github.com/releases/"))(Resolver.ivyStylePatterns)
+	resolvers += Resolver.url("SapsanAdmin GitHub Repository", url("http://rumataestorsky.github.com/releases/"))(Resolver.ivyStylePatterns)
   )
 ```
+
+* Далее добавьте маршруты Сапсана в начало файла `conf/routes`
+ маршруты админки [[находятся здесь | AdminRoutes]]
+ маршруты авторизации (не обязательны) [[находятся здесь | AuthRoutes]]
 
 ## Настройка
 
@@ -38,3 +42,9 @@ sapsan {
 }
 ```
 
+
+
+## Пример работы
+
+* Вы можете попробовать Сапсан без установки на этом демонстрационном приложении http://sapsan-demo.herokuapp.com/
+  также доступен исходный код демонстрационного приложения - https://github.com/RumataEstorsky/SapsanDemo
