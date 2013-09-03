@@ -23,8 +23,7 @@
 ```
 
 * Далее добавьте маршруты Сапсана в начало файла `conf/routes`
- маршруты админки - https://github.com/RumataEstorsky/SapsanAdmin/wiki/Adminroutes
- и маршруты авторизации (не обязательны, если вы используете свой механизм авторизации) - https://github.com/RumataEstorsky/SapsanAdmin/wiki/Authroutes
+ [маршруты админки](./../../wiki/Adminroutes) и [маршруты авторизации](./../../wiki/Authroutes)
 
 ## Настройка
 
