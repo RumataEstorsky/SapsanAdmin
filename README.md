@@ -25,7 +25,7 @@
 
 * Далее добавьте маршруты Сапсана в начало файла `conf/routes`
  маршруты админки - https://github.com/RumataEstorsky/SapsanAdmin/wiki/Adminroutes
- маршруты авторизации (не обязательны) - https://github.com/RumataEstorsky/SapsanAdmin/wiki/Authroutes
+ и маршруты авторизации (не обязательны, если вы используете свой механизм авторизации) - https://github.com/RumataEstorsky/SapsanAdmin/wiki/Authroutes
 
 ## Настройка
 
@@ -52,4 +52,4 @@ sapsan {
 
 ## Документация
 
-* Вы можете ознакомиться с принципами работы и управления SapsanAdmin в разделе вики -
+* Вы можете ознакомиться с принципами работы и управления SapsanAdmin в разделе [вики](./wiki/)
