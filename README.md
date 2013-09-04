@@ -37,24 +37,24 @@
 
 * В конфигурационном файле вашего проекта `conf/application.conf` добавьте следующие строки:
 
-```
-sapsan {
-    # Название приложения, будет отображаться в заголовке админки
-    name = "Супер-пупер"
-    # Вести ли историю редактирования записей
-    history = yes
-    # Сколько записей на страницу будет помещаться в списках
-    pagination.items_per_page = 10
-}
-```
+    ```
+    sapsan {
+        # Название приложения, будет отображаться в заголовке админки
+        name = "Супер-пупер"
+        # Вести ли историю редактирования записей
+        history = yes
+        # Сколько записей на страницу будет помещаться в списках
+        pagination.items_per_page = 10
+    }
+    ```
 
 * Не забудьте настроить подключение к БД (наприер, так)
-```
-db.default {
-    driver=org.postgresql.Driver
-    url="postgres://user:secret@localhost/mydatabase"
-}
-```
+    ```
+    db.default {
+        driver=org.postgresql.Driver
+        url="postgres://user:secret@localhost/mydatabase"
+    }
+    ```
 
 ## Описание моделей
 
