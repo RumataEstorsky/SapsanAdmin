@@ -5,7 +5,10 @@
 
 * Для работы у вас должен быть установленный и настроенный [Play Framework](http://www.playframework.org/) версии 2.1 или выше.
 
-* Создайте новый проект `play new example`
+* Создайте новый проект `play new example`,консоль Play спросит какой проект Вы хотите создвать (Scala или Java).
+  Сапсан может работать с обоими типами проектов, но если Вы выберите Scala то потребуется вручную подключить
+  зависимости `javaCore`, `javaJdbc`, `javaEbean` в файле `project/Build.scala`, а также
+  добавить строки `ebean.default="models.*"` в файл `conf/application.conf`
 
 * Отредактируйте в новом проекте файл `project/Build.scala` и добавьте туда строки:
 ```
@@ -20,10 +23,12 @@
 	resolvers += Resolver.url("SapsanAdmin GitHub Repository", url("http://rumataestorsky.github.com/releases/"))(Resolver.ivyStylePatterns)
   )
 ```
-  и не забудьте подключить `import Keys._` в этом файле.
+  и не забудьте подключить `import Keys._` в этом файле (если он не подключён).
 
 * Далее добавьте в файл `conf/routes` подключение маршрутов
- `->      /admin                              sa.Routes`
+
+`->      /admin                              sa.Routes`
+
  это лучше сделать сразу после основного маршрута "/".
  Естественно, `/admin` это необязательный адрес, вы можете задать более удобный для себя.
 
@@ -40,6 +45,14 @@ sapsan {
     history = yes
     # Сколько записей на страницу будет помещаться в списках
     pagination.items_per_page = 10
+}
+```
+
+* Не забудьте настроить подключение к БД (наприер, так)
+```
+db.default {
+    driver=org.postgresql.Driver
+    url="postgres://user:secret@localhost/mydatabase"
 }
 ```
 
