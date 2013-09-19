@@ -1,0 +1,69 @@
+@(field: _root_.sapsan.schema.Field, f: Form[_], showConstraints: Boolean = false, size: String = "form-control")
+@import _root_.sapsan.schema.DataTypeGroup
+@import views.html.sapsan.bootstrap._
+@import helper._
+@implicitFieldConstructor = @{ FieldConstructor(views.html.sapsan.bootstrap.fieldConstructor.render) }
+
+@field.dataType match {
+    case DataTypeGroup.ManyToOne => {
+        @select(f(field.name + "." + field.foreignModel.primaryField.name),
+            options(field.foreignModel.biList.map(x => x._1.toString -> x._2.toString )),
+            '_label -> field.label,
+            '_default -> Messages("interface.chooseValue"),
+            'class -> size,
+            '_showConstraints -> showConstraints
+        )
+    }
+    case DataTypeGroup.Boolean => {
+        @checkbox(f(field.name),
+            '_label -> None,
+            '_text -> field.label,
+            'class -> size,
+            '_showConstraints -> showConstraints
+        )
+    }
+    case DataTypeGroup.Integer => {
+        @inputText(f(field.name),
+            '_label -> field.label,
+            '_showConstraints -> showConstraints,
+            'class -> size,
+            'type -> "number"
+        )
+    }
+    case DataTypeGroup.Timestamp => {
+        @inputText(f(field.name),
+            '_label -> field.label,
+            '_showConstraints -> showConstraints,
+            'class -> size,
+            'type -> "datetime-local"
+        )
+    }
+
+    case DataTypeGroup.Text => {
+        @textarea(f(field.name),
+            '_label -> field.label,
+            'class -> size,
+            '_showConstraints -> showConstraints
+        )
+    }
+
+    case DataTypeGroup.Password  => {
+        @inputPassword(f(field.name), '_label -> field.label, 'class -> size,'_showConstraints -> showConstraints)
+    }
+
+    case DataTypeGroup.FileUpload  => {
+        @inputFile(f(field.name), '_label -> field.label)
+    }
+
+    case DataTypeGroup.Hidden => {
+        <input type="hidden" name="@field.name"/>
+    }
+
+    case _ => {
+        @inputText(f(field.name),
+            '_label -> field.label,
+            'class -> size,
+            '_showConstraints -> showConstraints
+        )
+    }
+}

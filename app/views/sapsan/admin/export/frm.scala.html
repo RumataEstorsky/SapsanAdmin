@@ -1,0 +1,77 @@
+@(model: _root_.sapsan.schema.Model)
+@import helper._
+@form(controllers.sa.routes.Admin.export(model.toCNotation, true),  'class -> "form-horizontal denser") {
+    <input name="send_data" type="hidden" value="true">
+    <fieldset>
+        <legend>
+            <span class="glyphicon glyphicon-chevron-down"></span>  @Messages("admin.export.selectFields")
+        </legend>
+        <div class="control-group">
+            <label class="control-label" data-original-title="Click to reverse selection" onclick="jQuery(this).siblings(".controls").find("input").click()" rel="tooltip">@Messages("admin.export.selectFieldsModel", model.label)</label>
+            <div class="controls">
+                @for((fieldName, field) <- model.fields) {
+                <label class="checkbox" for="schema_only_@field.toCNotation">
+                    <input checked="checked" id="schema_only_@field.toCNotation" name="schema[only][]" type="checkbox" value="@field.toCNotation" />
+                    @field.label
+                </label>
+                }
+            </div>
+        </div>
+    </fieldset>
+    <fieldset>
+        <legend>
+            <span class="glyphicon-chevron-down"></span>
+            @Messages("admin.export.optionsCSV")
+        </legend>
+        <div class="control-group">
+            <label class="control-label" for="csv_options_encoding_to">@Messages("admin.export.codepage")</label>
+            <div class="controls">
+                <select id="csv_options_encoding_to" name="csv_options[encoding_to]">
+                    @for(cp <- _root_.sapsan.common.Export.codePages) {
+                        <option value="@cp">@cp</option>
+                    }
+                </select>
+                <p class="help-block">@Messages("admin.export.codepageHelp")</p>
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="csv_options_skip_header">@Messages("admin.export.noHeader")</label>
+            <div class="controls">
+                <input id="csv_options_skip_header" name="csv_options[skip_header]" type="checkbox" value="true" />
+                <p class="help-block">@Messages("admin.export.noHeaderHelp")</p>
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="csv_options_generator_col_sep">@Messages("admin.export.separator")</label>
+            <div class="controls">
+                <select id="csv_options_generator_col_sep" name="csv_options[generator][col_sep]"><option value=","></option>
+                    <option value=",">@Messages("admin.export.sep1")</option>
+                    <option value=";">@Messages("admin.export.sep2")</option>
+                    <option value=""	"">@Messages("admin.export.sep3")</option></select>
+                <p class="help-block">@Messages("admin.export.separatorHelp")</p>
+            </div>
+        </div>
+    </fieldset>
+    <div class="form-actions">
+        <input name="return_to" type="hidden">
+
+        <button class="btn btn-primary" name="csv" type="submit">
+            <span class="glyphicon-white glyphicon-ok"></span>
+            @Messages("admin.export.buttonCSV")
+        </button>
+
+        <button class="btn btn-info" name="json" type="submit">
+            @Messages("admin.export.buttonJSON")
+        </button>
+
+        <button class="btn btn-info" name="xml" type="submit">
+            @Messages("admin.export.buttonXML")
+        </button>
+
+        <button class="btn" name="_continue" type="submit">
+            <span class="glyphicon-remove"></span>
+            @Messages("interface.cancel")
+        </button>
+
+    </div>
+}

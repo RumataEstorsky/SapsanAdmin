@@ -1,0 +1,63 @@
+auth.badLogin="Invalid email or password"
+auth.logoutSuccess="You are now logged out."
+
+
+###############################################################################
+#
+###############################################################################
+
+#
+#
+admin.skeleton.dashboard=Dashboard
+admin.skeleton.goHome=Home
+admin.skeleton.logout=Log out
+admin.skeleton.navigation=Navigation
+admin.skeleton.admin=Sapsan-Admin?
+admin.skeleton.loading=Loading...
+
+#
+#
+admin.list.list=List
+admin.list.addNew=Add new
+admin.list.export=Export
+admin.list.history=History
+admin.list.delete=Delete
+admin.list.edit=Edit
+admin.list.selectedItems=Selected items
+admin.list.addFilter=Add filter
+admin.list.filter=Filter
+admin.list.refresh=Refresh
+admin.list.show=Show
+admin.list.exportB=Export found Users
+admin.list.deleteB=Delete selected Users
+
+#
+#
+admin.export.selectFields=Select fields to export
+admin.export.selectFieldsModel=Fields from {0}
+admin.export.optionsCSV=Options for csv
+admin.export.codepage=Encode to
+admin.export.codepageHelp=Choose output encoding. Leave empty to let current input encoding untouched: (UTF-8)
+admin.export.noHeader=No header
+admin.export.noHeaderHelp=Do not output a header (no fields description)
+admin.export.sep1=<comma> ','
+admin.export.sep2=<semicolon> ';'
+admin.export.sep3=<tabs>
+admin.export.separator=Column separator
+admin.export.separatorHelp=Leave blank for default (',')
+admin.export.buttonCSV=Export to csv
+admin.export.buttonJSON=Export to json
+admin.export.buttonXML=Export to xml
+
+#
+#
+admin.edit.save=Save
+admin.edit.saveAndAdd=Save and add another
+admin.edit.saveAndEdit=Save and edit
+
+
+admin.delete.yes=Yes, I'm sure
+admin.delete.confirm=Are you sure you want to delete this {0}? The following related items may be deleted or orphaned:
+
+admin.show.title=Basic info
+
