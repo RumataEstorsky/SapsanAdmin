@@ -46,6 +46,15 @@
             '_showConstraints -> showConstraints
         )
     }
+    case DataTypeGroup.CKEditor => {
+        @textarea(f(field.name),
+            '_label -> field.label,
+            'class -> ("ckeditor " + size).toString,
+            '_showConstraints -> showConstraints,
+            'rows -> 10,
+            'cols -> 80
+        )
+    }
 
     case DataTypeGroup.Password  => {
         @inputPassword(f(field.name), '_label -> field.label, 'class -> size,'_showConstraints -> showConstraints)

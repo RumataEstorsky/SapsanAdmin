@@ -2,9 +2,9 @@
 ###############################################################################
 # Маршруты для авторизации
 ###############################################################################
-GET     /login                              controllers.sa.Auth.login
-POST    /login                              controllers.sa.Auth.authenticate
-GET     /logout                             controllers.sa.Auth.logout
+#GET     /login                              controllers.sa.Auth.login
+#POST    /login                              controllers.sa.Auth.authenticate
+#GET     /logout                             controllers.sa.Auth.logout
 
 
 ###############################################################################

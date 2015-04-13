@@ -9,16 +9,17 @@
         <meta content="NONE,NOARCHIVE" name="robots">
         <title>@(if(model == null) "" else model.label) | @Admin.appName</title>
 
+
         @css("bootstrap.css")
-        @css("sapsan.css")
         <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css">
+        @css("sapsan.css")
         @stylesheets
+
 
         @javascript("jquery-latest.js")
         @javascript("bootstrap.min.js")
         <script type="text/javascript" src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
         @javascript("ra.filter-box.js")
-
         @javascripts
 
     </head>
@@ -53,18 +54,16 @@
 
 
         <div class="container">
-            <div class="row">
-                <div class="col-xs-12 col-sm-9">
-                    <div class="content" data-pjax-container>
-
-                        @content
-                    </div>
+            <div class="col-md-3" id="sidebar" role="navigation">
+                <div class="row">
+                @modelMenu(model)
                 </div>
+            </div>
 
-                <div class="col-xs-6 col-sm-3 sidebar-offcanvas" id="sidebar" role="navigation">
-                    <div class="row">
-                        @modelMenu(model)
-                    </div>
+            <div class="col-md-9">
+                <div class="content" data-pjax-container>
+
+                @content
                 </div>
             </div>
         </div>

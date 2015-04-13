@@ -43,8 +43,9 @@ class Model(val clazz: Class[_]) extends Ordered[Model] {
 
     /** Инициализация класса */
     def init = {
-        clazz.getDeclaredFields.foreach { f =>
-            // Берём только поля, помеченные аннотацией Label
+        // TODO getDeclaredFields
+        clazz.getFields.foreach { f =>
+            // Берём только ПУБЛИЧНЫЕ поля, помеченные аннотацией Label
             if(f.getAnnotation(classOf[Label]) != null) {
                 val field = new Field(this, f)
                 fields.put(field.toCNotation, field)
@@ -65,6 +66,9 @@ class Model(val clazz: Class[_]) extends Ordered[Model] {
 
     /** Поля для вывода в списке записей */
     def fieldsForGrid = fields.filter(f => !(f._2.isManyToMany || f._2.isOneToMany))
+
+    val maxGridColumns = 6
+    //def fields
 
     /** Возвращает первую колонку, которая является первичным ключом */
     def primaryField = fields.find(_._2.isPrimary).head._2

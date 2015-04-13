@@ -1,10 +1,34 @@
 package sapsan.common
 
+import java.nio.charset.Charset
+//import com.avaje.ebean.Ebean
+
 
 object Export {
-    val codePages = Array("UTF-8", "UTF-16LE", "UTF-16BE", "UTF-32LE", "UTF-32BE", "UTF-7", "ISO-8859-1", "ISO-8859-15",
-        "IBM-850", "MacRoman", "Windows-1252", "ISO-8859-3", "IBM-852", "ISO-8859-2", "MacCE", "Windows-1250", "IBM-855",
-        "ISO-8859-5", "ISO-IR-111", "KOI8-R", "MacCyrillic", "Windows-1251", "CP-866", "KOI-U", "MacUkranian", "GB2312",
-        "GBK", "GB18030", "HZ", "ISO-2022-CN", "Big5", "Big5-HKSCS", "EUC-TW", "EUC-JP", "ISO-2022-JP", "Shift_JIS",
-        "EUC-KR", "UHC", "JOHAB", "ISO-2022-KR")
+    def toCSV(model: String, selectedColumns: Set[String], charset: Charset, separator: String) = {
+        // TODO commented 17th feb 2015 because val m = Schema.models(model) one error found
+        //        var result = ""
+//        val m = Schema.models(model)
+//
+//        // Запрос к БД
+//        import collection.JavaConversions._
+//        val items = Ebean.find(m.clazz).findList //.toArray // TODO .toArray?
+//
+//        for(item <- items) {
+//            for((name, field) <- m.fields if selectedColumns.contains(name)) {
+//                import play.api.libs.json.Json
+//                import play.api.libs.json.Json.toJson
+//                //println(name + "= " + field.extract(item))
+//                //result = result + field.extract(item) + separator
+//                val jsonArray = Json.toJson(Seq(
+//                    toJson(1), toJson("Bob"), toJson(3), toJson(4)
+//                ))
+//                result = result + jsonArray
+//            }
+//            result = result + "\n"
+//        }
+//
+//        result
+        ""
+    }
 }

@@ -10,6 +10,12 @@ import java.util.Date
 import java.text.SimpleDateFormat
 import play.api.i18n.Messages
 import scala.Tuple2
+import java.nio.charset.Charset
+import sapsan.common.Export
+
+//import play.api.data._
+//import play.api.data.Forms._
+
 
 object FormButton extends Enumeration {
     type FormButton = Value
@@ -23,6 +29,11 @@ import FormButton._
  * Основной контроллер админки
  */
 object Admin extends Controller with Secured {
+
+//    case class exportForm(format: String, model: String, selCol: Set[String], returnTo: String, sendData: String, csvSeparator, charset: String)
+//    val exportFormMapping = Form(
+//        mapping()(exportForm.apply)(exportForm.unapply)
+//    )
 
     /** Название приложения */
     val appName = Play.application.configuration.getString("sapsan.name", "Demo")
@@ -89,7 +100,7 @@ object Admin extends Controller with Secured {
         }
     }
 
-    //TODO msg передавать как пару, а не как карту
+    /** Перенаправление после редактирования записи в модели, в зависимости от нажатой кнопки в форме */
     def redirectAfterSave(model: String, id: Long, data: Map[String, String], msg: (String, String) ) =
         if (data.exists(_._1 == FormButton.SaveAndEdit.toString))
             Redirect(controllers.sa.routes.Admin.edit(model, id)).flashing(
@@ -169,7 +180,28 @@ object Admin extends Controller with Secured {
 
     /** Экспорт данных из данной модели */
     def export(model: String, all: Boolean) = withAuth { _ => implicit request =>
-        Ok
+        request.body.asFormUrlEncoded match {
+            case Some(form) =>
+                val charset = Charset.forName(form("charset").head)
+                val format = form("format").head
+                val model = form("model").head
+                val selCol = form("sel_col").toSet
+                val returnTo = form("return_to").head
+                val csvSeparator = form("csv_separator").head
+                val sendData = form("send_data").head.toBoolean
+                val result = Export.toCSV(model, selCol, charset, csvSeparator)
+                println(result)
+
+                //text/javascript
+                //"text/csv"
+                //text/xml
+                //text/yaml
+                Ok(result).withHeaders(
+                    CONTENT_TYPE -> "text/csv",
+                    CONTENT_DISPOSITION -> s"attachment;filename=$model-export.$format"
+                )
+            case None => BadRequest
+        }
     }
 
     /** История редактирования записей в данной модели */
@@ -214,4 +246,6 @@ object Admin extends Controller with Secured {
             .setFetchAhead(false)
             .getPage(page)
     }
+
+
 }

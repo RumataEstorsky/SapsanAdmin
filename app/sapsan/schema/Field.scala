@@ -27,7 +27,7 @@ class Field(val model: Model, jf: JavaField) {
     val name = jf.getName
 
     /** Родной тип поля */
-    val nt : Any = jf.getType
+    val nt: Any = jf.getType
 
     /** Название для пользователей */
     val label = jf.getAnnotation(classOf[Label]).value
@@ -77,7 +77,7 @@ class Field(val model: Model, jf: JavaField) {
         else null
     }
 
-    /** Хелпер для форматирования дат*/
+    /** Хелпер для форматирования дат */
     lazy val dateFormatter = {
         val format = jf.getAnnotation(classOf[play.data.format.Formats.DateTime])
         new SimpleDateFormat(if (format != null) format.pattern() else "dd.MM.yyyy HH:mm:ss")
@@ -121,22 +121,33 @@ class Field(val model: Model, jf: JavaField) {
 
     /** Типы */
     def isInt8 = nt == classOf[Byte] || nt == classOf[java.lang.Byte]
+
     def isInt16 = nt == classOf[Short] || nt == classOf[java.lang.Short]
+
     def isInt32 = nt == classOf[Int] || nt == classOf[java.lang.Integer]
+
     def isInt64 = nt == classOf[Long] || nt == classOf[java.lang.Long]
+
     def isIntAny = isInt8 || isInt16 || isInt32 || isInt64
+
     /** Floats (IEEE 754) */
-    def isFloat32 =  nt == classOf[Float] || nt == classOf[java.lang.Float]
-    def isFloat64 =  nt == classOf[Double] || nt == classOf[java.lang.Double]
+    def isFloat32 = nt == classOf[Float] || nt == classOf[java.lang.Float]
+
+    def isFloat64 = nt == classOf[Double] || nt == classOf[java.lang.Double]
+
     def isFloatAny = isFloat32 || isFloat64
+
     def isBoolean = nt == classOf[Boolean] || nt == classOf[java.lang.Boolean]
+
     def isChar = nt == classOf[Char]
+
     def isString = nt == classOf[String] || nt == classOf[StringBuffer] || nt == classOf[StringBuilder] || nt == classOf[CharSequence]
+
     def isTimestampAny = nt == classOf[java.util.Date] || nt == classOf[java.sql.Time] || nt == classOf[java.sql.Timestamp]
 
     def detectDataType: DataTypeGroup = nt match {
         case dt if columnAnn != null && columnAnn.columnDefinition().toLowerCase.contains("text") => DataTypeGroup.Text
-        case dt if (encryptedAnn != null || name.toLowerCase == "password" ) => DataTypeGroup.Password
+        case dt if (encryptedAnn != null || name.toLowerCase == "password") => DataTypeGroup.Password
         case dt if isOneToOne => DataTypeGroup.OneToOne
         case dt if isOneToMany => DataTypeGroup.OneToMany
         case dt if isManyToOne => DataTypeGroup.ManyToOne
@@ -163,16 +174,25 @@ class Field(val model: Model, jf: JavaField) {
 
     /** Является ли поле авто-заполняемым */
     def isAutoFilling = dataType == DataTypeGroup.Timestamp && Field.dateFields.contains(name)
+
     /** Есть л дефолтное значение у поля */
     def isDefaultExists = extract(model.experiment) != null
 
     /** Извлечение данного поля из переданного объекта */
-    def extract(obj: Any) = jf.get(obj)
+    def extract(obj: Any) = {
+        try {
+            jf.get(obj)
+        } catch {
+            case e: IllegalAccessException => throw new IllegalAccessException(s"К полю '${name}' в модели '${model.name}' запрещён доступ: " + e.getMessage)
+            case x: Exception => throw x
+        }
+    }
 
     /** Как и extract извлекает значение поля из объекта, но и ФОРМАТИРУЕТ его */
     def extractD(obj: Any) = jf.get(obj) match {
         case v: java.lang.Boolean => if (v) "Да" else "Нет"
         case v: java.util.Date => dateFormatter.format(v)
+        case v: String => v.take(50)
         case v => {
             //println(v + "=" + v.getClass)
             v
@@ -196,7 +216,7 @@ class Field(val model: Model, jf: JavaField) {
     }
 
     /** Конвертация значения из типа Long в родной тип поля. Применяется для конвертации id в ОРМ Ebean */
-    def fromLong(id: Long) : Any = nt match {
+    def fromLong(id: Long): Any = nt match {
         case dt if isInt64 => id
         case dt if isInt32 => id.toInt
         case dt if isInt16 => id.toShort
@@ -205,7 +225,7 @@ class Field(val model: Model, jf: JavaField) {
     }
 
     /** Цикличная связь, т.е. это поле имеет М-1 ключ указывающий
-      *  на эту же модель (обычно используют для организации деревьев) */
+      * на эту же модель (обычно используют для организации деревьев) */
     def isCyclicRel = isManyToOne && foreignModel == model
 
     /** Генерация случайного значения для данного типа поля */
@@ -221,14 +241,13 @@ class Field(val model: Model, jf: JavaField) {
         case nt if isString => model + "-" + Random.nextInt
         case nt if isManyToOne => {
             val ids = Ebean.find(foreignModel.clazz).findIds()
-            if(ids.isEmpty) throw new Exception(s"Table $name must be contains records!")
+            if (ids.isEmpty) throw new Exception(s"Table $name must be contains records!")
             val id = ids.get(Random.nextInt(ids.size()))
             foreignModel.recordById(id)
         }
 
         case nt => "Unknow"
     }
-
 
 
 }
