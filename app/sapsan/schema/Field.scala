@@ -30,14 +30,18 @@ class Field(val model: Model, jf: JavaField) {
     val nt: Any = jf.getType
 
     /** Название для пользователей */
-    val label = jf.getAnnotation(classOf[Label]).value
+    val label =
+      if(jf.getAnnotation(classOf[Label]) == null) name
+      else jf.getAnnotation(classOf[Label]).value
 
     /** Название в Си-нотации (для применения в виде идентификаторов на сайте) */
     val toCNotation = Notation.camelToC(name)
 
     /** Обобщённый тип данных */
     // TODO проверять аннотацию, если есть, то возвращаем тип из неё
-    lazy val dataType = if (jf.getAnnotation(classOf[SapsanField]) == null) detectDataType else jf.getAnnotation(classOf[SapsanField]).dataType()
+    lazy val dataType =
+      if (jf.getAnnotation(classOf[SapsanField]) == null) detectDataType
+      else jf.getAnnotation(classOf[SapsanField]).dataType()
 
     /** Максимальная длина в символах, которое можно записать в поле */
     lazy val maxLength = {
@@ -92,7 +96,7 @@ class Field(val model: Model, jf: JavaField) {
     lazy val regexp = if (regexpAnn == null) "" else regexpAnn.value()
     lazy val regexpError = if (regexpAnn == null) "" else regexpAnn.message()
 
-    lazy val isNullable = (jf.getAnnotation(classOf[com.avaje.ebean.validation.NotNull]) == null) ||
+    lazy val isNullable = (jf.getAnnotation(classOf[javax.validation.constraints.NotNull]) == null) ||
         (jf.getAnnotation(classOf[play.data.format.Formats.NonEmpty]) == null) ||
         (jf.getAnnotation(classOf[play.data.validation.Constraints.Required]) == null)
 
@@ -101,8 +105,10 @@ class Field(val model: Model, jf: JavaField) {
     lazy val isTransient = (jf.getAnnotation(classOf[javax.persistence.Transient]) != null)
 
     lazy val isTimestampCreated = jf.getAnnotation(classOf[com.avaje.ebean.annotation.CreatedTimestamp]) != null
-    lazy val isTimestampUpdated = jf.getAnnotation(classOf[com.avaje.ebean.annotation.UpdatedTimestamp]) != null ||
-        jf.getAnnotation(classOf[javax.persistence.Version]) != null
+
+    lazy val isTimestampUpdated =
+      jf.getAnnotation(classOf[com.avaje.ebean.annotation.UpdatedTimestamp]) != null ||
+      jf.getAnnotation(classOf[javax.persistence.Version]) != null
 
 
     /** Является ли это поле ключевым? */

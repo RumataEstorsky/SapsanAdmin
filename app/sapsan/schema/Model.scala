@@ -1,5 +1,6 @@
 package sapsan.schema
 
+//import play.db.jpa.JPA
 import sapsan.annotation.Label
 import scala.collection.mutable.LinkedHashMap
 import sapsan.common.Notation
@@ -12,7 +13,9 @@ class Model(val clazz: Class[_]) extends Ordered[Model] {
     val name = clazz.getSimpleName
 
     /** Название для пользователей */
-    lazy val label = if(clazz.getAnnotation(classOf[Label]) == null) "" else clazz.getAnnotation(classOf[Label]).value
+    lazy val label =
+      if(clazz.getAnnotation(classOf[Label]) == null) name
+      else clazz.getAnnotation(classOf[Label]).value
 
     /** JPA-аннотация модели @Table (описывает свойства таблицы) */
     private [this] lazy val tableAnn = clazz.getAnnotation(classOf[javax.persistence.Table])
@@ -27,11 +30,20 @@ class Model(val clazz: Class[_]) extends Ordered[Model] {
     lazy val uniqueConstraints = if(tableAnn == null) List() else tableAnn.uniqueConstraints()
 
     /**  Является ли наследником класса play.db.ebean.Model */
-    val isModel = clazz.getSuperclass() == classOf[play.db.ebean.Model] &&
-        clazz.getAnnotation(classOf[sapsan.annotation.Label]) != null
+    //TODO Hibernate http://stackoverflow.com/questions/1042798/retrieving-the-inherited-attribute-names-values-using-java-reflection
+    val isModel =
+      clazz.getAnnotation(classOf[javax.persistence.Entity]) != null &&
+      clazz.getFields.size > 1 &&
+      hasPrimary
 
     /** Поля моделей */
-    val fields = new LinkedHashMap[String, Field]
+    lazy val fields = clazz
+      .getFields
+      .filter(_.getName != "find")
+      .map { f => //TODO
+      val field = new Field(this, f)
+      (field.toCNotation, field)
+    }.toMap
 
     /** Название в Си-нотации (для применения в виде идентификаторов на сайте) */
     val toCNotation = Notation.camelToC(name)
@@ -39,20 +51,20 @@ class Model(val clazz: Class[_]) extends Ordered[Model] {
     /** Экспериментальный экземпляр объекта для данной модели (для получения значений по-умолчанию и других операций) */
     def experiment = clazz.getConstructor().newInstance()
 
-    init
+//    init
 
-    /** Инициализация класса */
-    def init = {
-        // TODO getDeclaredFields
-        clazz.getFields.foreach { f =>
-            // Берём только ПУБЛИЧНЫЕ поля, помеченные аннотацией Label
-            if(f.getAnnotation(classOf[Label]) != null) {
-                val field = new Field(this, f)
-                fields.put(field.toCNotation, field)
-            }
-        }
-
-    }
+//    /** Инициализация класса */
+//    def init = {
+//        // TODO getDeclaredFields
+//        clazz.getFields.foreach { f =>
+//            // Берём только ПУБЛИЧНЫЕ поля, помеченные аннотацией Label
+//            if(f.getAnnotation(classOf[Label]) != null) {
+//                val field = new Field(this, f)
+//                fields.put(field.toCNotation, field)
+//            }
+//        }
+//
+//    }
 
     /** Ассоциативный массив из названий полей в кач. ключей и пустых строк - как значений. Магия 7 уровня, объяснения в книгах по алхимии. */
     val emptyForm = fields.map { case (_, f) => (f.toCNotation, "") }
@@ -70,8 +82,13 @@ class Model(val clazz: Class[_]) extends Ordered[Model] {
     val maxGridColumns = 6
     //def fields
 
+    def hasPrimary = fields.exists(_._2.isPrimary)
     /** Возвращает первую колонку, которая является первичным ключом */
-    def primaryField = fields.find(_._2.isPrimary).head._2
+    //TODO hasPrimary
+    def primaryField = fields.find(_._2.isPrimary).headOption match {
+      case Some(f) => f._2
+      case None => fields.head._2
+    }
 
     /** Возвращает "именной ключ", или же первый столбец, если именной ключ не будет найден */
     def nameField = {
@@ -184,6 +201,37 @@ class Model(val clazz: Class[_]) extends Ordered[Model] {
 
     /** Количество записей в таблице */
     def recordCount = Ebean.find(clazz).findRowCount()
+//    def recordCount = {
+//      val qb = JPA.em().getCriteriaBuilder
+//      val cq = qb.createQuery(classOf[Long])
+//      cq.select(qb.count(cq.from(clazz)))
+//      JPA.em().createQuery(cq).getSingleResult
+//    }
+//    def recordCount = 0L // TODO Hibernate
+
+    def delete(id : Long) = {
+      val r = recordById(id)
+      Ebean.delete(r)
+    }
+
+  def pageXYZ(page: Int, pageSize: Int, sortBy: String, orderBy: String = "asc") = {
+    Ebean.find(clazz).where
+      .orderBy(sortBy + " " + orderBy)
+      .findPagingList(pageSize)
+      .setFetchAhead(false)
+      .getPage(page)
+  }
+
+
+  // удаление без загрузки
+  //        Ebean.delete(m.clazz, id)
+
+
+  // удаление через вызов метода delete()
+  //        val method = m.clazz.getMethod("delete")
+  //        method.invoke(r)
+  // перевод к списку
+
 
     override def toString: String = name
 }

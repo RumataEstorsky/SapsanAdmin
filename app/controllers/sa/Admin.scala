@@ -3,18 +3,11 @@ package controllers.sa
 import play.api.mvc._
 import views.html.sapsan._
 import sapsan.schema.Schema
-import com.avaje.ebean.Ebean
 import play.data._
 import play.Play
-import java.util.Date
-import java.text.SimpleDateFormat
 import play.api.i18n.Messages
-import scala.Tuple2
 import java.nio.charset.Charset
 import sapsan.common.Export
-
-//import play.api.data._
-//import play.api.data.Forms._
 
 
 object FormButton extends Enumeration {
@@ -23,7 +16,6 @@ object FormButton extends Enumeration {
     val SaveAndAdd = Value("_saveAndAdd")
     val SaveAndEdit = Value("_saveAndEdit")
 }
-import FormButton._
 
 /**
  * Основной контроллер админки
@@ -65,7 +57,7 @@ object Admin extends Controller with Secured {
         val sortBy = if (sort.isEmpty) m.nameField.name else sort
         //val orderBy = if(order) "asc" else "desc"
         //val items = Base.page(page, itemsPerPage, sortBy, orderBy)
-        val items = pageXYZ(m.clazz, page, itemsPerPage, sortBy, orderBy)
+        val items = m.pageXYZ(page, itemsPerPage, sortBy, orderBy)
         Ok(admin.list.list(Schema.models(model), items))
     }
 
@@ -160,16 +152,6 @@ object Admin extends Controller with Secured {
     /** Реальное удаление записи */
     def delete(model: String, id: Long) = withAuth { _ => implicit request =>
         val m = Schema.models(model)
-        val r = m.recordById(id)
-        Ebean.delete(r)
-        // удаление без загрузки
-        //        Ebean.delete(m.clazz, id)
-
-
-        // удаление через вызов метода delete()
-        //        val method = m.clazz.getMethod("delete")
-        //        method.invoke(r)
-        // перевод к списку
         Redirect(routes.Admin.list(m.toCNotation))
     }
 
@@ -228,8 +210,6 @@ object Admin extends Controller with Secured {
         }
     }
 
-    // ------------------------------------------------------------------------
-
     def x(qs: Map[String, Seq[String]]) = {
         val pattern = """f\[(\w+)\]\[(\d+)\]\[(\w)\]""".r
         qs.filter(_._1.startsWith("f")).foreach {
@@ -238,14 +218,5 @@ object Admin extends Controller with Secured {
                 println(name)
         }
     }
-
-    def pageXYZ(bean: Class[_], page: Int, pageSize: Int, sortBy: String, orderBy: String = "asc") = {
-        Ebean.find(bean).where
-            .orderBy(sortBy + " " + orderBy)
-            .findPagingList(pageSize)
-            .setFetchAhead(false)
-            .getPage(page)
-    }
-
 
 }

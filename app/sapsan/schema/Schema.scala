@@ -1,35 +1,34 @@
 package sapsan.schema
 
-import scala.collection.mutable.{LinkedHashMap,HashMap}
-import scala.collection.immutable.TreeMap
+
 import play.Play
 import play.libs.Classpath
-import sapsan.annotation.Label
+
+import scala.collection.immutable.TreeMap
 
 
 object Schema {
-    /** Хеш по Си-псевдониму имени */
-    val models = loadModels()
+
+  /** Хеш по Си-псевдониму имени */
+  lazy val models = loadModels(Play.application.configuration.getString("sapsan.models_package", "models"))
 
 
-    def modelsByStatic = models.values.toList.sortWith(_ < _)
+  def modelsByStatic = models.values.toList.sortWith(_ < _)
 
-    /**
-     * Загружает модели в память.
-     * @param packageName название пакета. Модели будут загружены рекурсивно из него и всех подкаталогов
-     */
-    def loadModels(packageName: String = "models") = {
-        val result = new HashMap[String, Model]
-        import collection.JavaConversions._
-        Classpath.getTypesAnnotatedWith(Play.application, "models", classOf[Label]).map { className =>
-            val clazz = Class.forName(className, true, Play.application.classloader)
-            val model = new Model(clazz)
-            if (model.isModel) {
-                result.put(model.toCNotation, model)
-            }
-        }
-        // Отсортируем модели по ключам, по алфавиту
-        TreeMap(result.toSeq:_*)
-    }
+  /**
+   * Загружает модели в память.
+   * @param packageName название пакета. Модели будут загружены рекурсивно из него и всех подкаталогов
+   */
+  def loadModels(packageName: String) = {
+    import scala.collection.JavaConversions._
+    val models = Classpath.getTypesAnnotatedWith(Play.application, packageName, classOf[javax.persistence.Entity]).map { className =>
+      val clazz = Class.forName(className, true, Play.application.classloader)
+      val model = new Model(clazz)
+      (model.toCNotation, model)
+    }.filter(_._2.isModel)
+
+    // Отсортируем модели по ключам, по алфавиту
+    TreeMap(models.toSeq: _*)
+  }
 
 }
