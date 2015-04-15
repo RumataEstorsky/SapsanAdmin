@@ -7,8 +7,8 @@
             @Messages("admin.list.selectedItems")<b class="caret"></b>
         </a>
         <ul class="dropdown-menu" style="left:auto; right:0;">
-            <li><a href="#" onclick="jQuery("#bulk_action").val("export"); jQuery("#bulk_form").submit(); return false;">@Messages("admin.list.exportB")</a></li>
-            <li><a href="#" onclick="jQuery("#bulk_action").val("bulk_delete"); jQuery("#bulk_form").submit(); return false;">@Messages("admin.list.deleteB")</a></li>
+            <li><a href="#" onclick="jQuery("#bulk_action").val("export"); jQuery("#bulk_form").submit(); return false;">@Messages("admin.list.exportB", model.label)</a></li>
+            <li><a href="#" onclick="jQuery("#bulk_action").val("bulk_delete"); jQuery("#bulk_form").submit(); return false;">@Messages("admin.list.deleteB", model.label)</a></li>
         </ul>
     </li>
     <li class="dropdown" style="float:right">
@@ -50,7 +50,7 @@
     <style>
 </style>
     @easyFilter(model) {
-        <span style="float : right"><a href="@routes.Admin.exportConfig(model.toCNotation)" class="btn btn-info">@Messages("admin.list.exportB")</a></span>
+        <span style="float : right"><a href="@routes.Admin.exportConfig(model.toCNotation)" class="btn btn-info">@Messages("admin.list.exportB", model.label)</a></span>
     }
 
 

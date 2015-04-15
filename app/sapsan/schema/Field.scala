@@ -1,5 +1,6 @@
 package sapsan.schema
 
+import play.api.i18n.Messages
 import sapsan.annotation.{SapsanField, Label}
 import sapsan.common.Notation
 import java.lang.reflect.{Field => JavaField}
@@ -30,9 +31,11 @@ class Field(val model: Model, jf: JavaField) {
     val nt: Any = jf.getType
 
     /** Название для пользователей */
-    val label =
-      if(jf.getAnnotation(classOf[Label]) == null) name
-      else jf.getAnnotation(classOf[Label]).value
+    lazy val label = {
+      val key = s"field.${model.name}.${name}"
+      if (Messages.isDefinedAt(key)) Messages(key)
+      else name
+    }
 
     /** Название в Си-нотации (для применения в виде идентификаторов на сайте) */
     val toCNotation = Notation.camelToC(name)

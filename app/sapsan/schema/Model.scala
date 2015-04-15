@@ -1,7 +1,8 @@
 package sapsan.schema
 
 //import play.db.jpa.JPA
-import sapsan.annotation.Label
+
+import play.api.i18n.Messages
 import scala.collection.mutable.LinkedHashMap
 import sapsan.common.Notation
 import com.avaje.ebean.Ebean
@@ -13,9 +14,12 @@ class Model(val clazz: Class[_]) extends Ordered[Model] {
     val name = clazz.getSimpleName
 
     /** Название для пользователей */
-    lazy val label =
-      if(clazz.getAnnotation(classOf[Label]) == null) name
-      else clazz.getAnnotation(classOf[Label]).value
+    lazy val label = {
+      val key = "model." + name
+      if(Messages.isDefinedAt(key)) Messages(key)
+      else name
+    }
+
 
     /** JPA-аннотация модели @Table (описывает свойства таблицы) */
     private [this] lazy val tableAnn = clazz.getAnnotation(classOf[javax.persistence.Table])
