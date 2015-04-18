@@ -21,7 +21,7 @@
         icon = "glyphicon-remove",
         classes = "icon delete_member_link"  + " active".when(active == "delete")
     )
-
+@*
 @if(play.Play.application.configuration.getBoolean("sapsan.history", true)) {
 
     @nav.adm1(title = Messages("admin.list.history"),
@@ -30,6 +30,7 @@
         classes = "icon history_show_member_link"  + " active".when(active == "history")
     )
 }
+*@
 
     @content
 

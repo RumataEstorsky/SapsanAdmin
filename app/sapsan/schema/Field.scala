@@ -1,7 +1,10 @@
 package sapsan.schema
 
-import sapsan.annotation.{SapsanField, Label}
-import sapsan.common.Notation
+import java.awt
+
+import play.api.i18n.Messages
+import sapsan.annotation.SapsanField
+import sapsan.common.{HtmlInputComponent, Notation}
 import java.lang.reflect.{Field => JavaField}
 import play.Logger
 import java.text.SimpleDateFormat
@@ -16,6 +19,24 @@ object Field {
 }
 
 class Field(val model: Model, jf: JavaField) {
+    import HtmlInputComponent._
+    val typesToComponents = Map(
+        DataTypeGroup.Unknown -> Unknown,
+        DataTypeGroup.Boolean -> InputCheckbox,
+        DataTypeGroup.Integer -> InputNumeric,
+        DataTypeGroup.Float -> InputNumeric,
+        DataTypeGroup.String -> InputText,
+        DataTypeGroup.Text -> TextArea,
+        DataTypeGroup.Password -> InputPassword,
+        DataTypeGroup.Timestamp -> InputDateTime,
+        DataTypeGroup.Blob -> FileUpload,
+        DataTypeGroup.Enumerated -> InputRadio,
+        DataTypeGroup.OneToMany -> Select,
+        DataTypeGroup.Primary -> Label,
+//        DataTypeGroup.OneToOne ->,
+        DataTypeGroup.ManyToOne -> InputText
+//        DataTypeGroup.ManyToMany ->,
+    )
 
 
     //                val numericPrecision: Int = 0,
@@ -30,18 +51,28 @@ class Field(val model: Model, jf: JavaField) {
     val nt: Any = jf.getType
 
     /** Название для пользователей */
-    val label =
-      if(jf.getAnnotation(classOf[Label]) == null) name
-      else jf.getAnnotation(classOf[Label]).value
+    lazy val label = {
+      val key = s"field.${model.name}.${name}"
+      if (Messages.isDefinedAt(key)) Messages(key)
+      else name
+    }
 
     /** Название в Си-нотации (для применения в виде идентификаторов на сайте) */
     val toCNotation = Notation.camelToC(name)
 
+    val ann = jf.getAnnotation(classOf[SapsanField])
+
     /** Обобщённый тип данных */
     // TODO проверять аннотацию, если есть, то возвращаем тип из неё
     lazy val dataType =
-      if (jf.getAnnotation(classOf[SapsanField]) == null) detectDataType
-      else jf.getAnnotation(classOf[SapsanField]).dataType()
+        if(ann.dataType() == DataTypeGroup.Unknown) detectDataType
+        else ann.dataType()
+
+    lazy val component =
+        if(ann.inputComponent() == HtmlInputComponent.Unknown) typesToComponents(dataType)
+        else ann.inputComponent()
+
+    println(dataType + "= " + component)
 
     /** Максимальная длина в символах, которое можно записать в поле */
     lazy val maxLength = {

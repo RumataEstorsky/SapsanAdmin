@@ -25,10 +25,22 @@ object Schema {
       val clazz = Class.forName(className, true, Play.application.classloader)
       val model = new Model(clazz)
       (model.toCNotation, model)
-    }.filter(_._2.isModel)
+    }
+      //.filter(_._2.isModel)
 
     // Отсортируем модели по ключам, по алфавиту
     TreeMap(models.toSeq: _*)
   }
 
+
+  def prepareKeysForI18l = models.map{ case(_, m) =>
+    "#=================\n" +
+    s"model.${m.name}=\n" +
+    m.fields.map { case(_, f) =>
+        s"field.${m.name}.${f.name}=\n"
+    }.mkString
+  }.mkString
+
+
+//  println(prepareKeysForI18l)
 }

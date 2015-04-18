@@ -8,6 +8,7 @@ package sapsan.schema;
  * Создан: 09.08.13 в 14:15
  */
 public enum DataTypeGroup {
+    Unknown,
     /**
      * Булев тип
      */
@@ -23,9 +24,7 @@ public enum DataTypeGroup {
     /**
      * String, StringBuffer, StringBuilder, CharSequence
      */
-    String, Password,
-    Text, CKEditor, CodeMirror, Wysihtml5,
-    Email,
+    String, Text, Password,
     /**
      * Date, Time
      */
@@ -35,12 +34,7 @@ public enum DataTypeGroup {
      */
     Blob,
     Enumerated, /** Set, */
-    /**
-     * Разные поля
-     */
-    Hidden,
-    Lists,
-    FileUpload,
+
     /**
      * Связочные поля
      */

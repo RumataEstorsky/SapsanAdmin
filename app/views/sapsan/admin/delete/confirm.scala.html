@@ -21,23 +21,24 @@
     <h4>
         @Messages("admin.delete.confirm", item)
     </h4>
-    <ul>
-        <li style="display : block ; margin-top : 10 px">
-            <span class="label">@model.label</span>
-            <a href="@routes.Admin.show(model.toCNotation, id)">@item</a>
-            <ul>
-            </ul>
-        </li>
-    </ul>
+    @*<ul>*@
+        @*<li style="display : block ; margin-top : 10 px">*@
+            @*<span class="label">@model.label</span>*@
+            @*<a href="@routes.Admin.show(model.toCNotation, id)">@item</a>*@
+            @*<ul>*@
+            @*</ul>*@
+        @*</li>*@
+    @*</ul>*@
     @form(routes.Admin.delete(model.toCNotation, id)) {
         <input name="return_to" type="hidden">
 
         <div class="form-actions">
             <button class="btn btn-danger" type="submit">
-                <span class="glyphicon glyphicon-ok"></span>@Messages("admin.delete.yes")
+                <span class="glyphicon glyphicon-ok"></span>
+                @Messages("admin.delete.yes")
             </button>
             <button class="btn" href="@routes.Admin.list(model.toCNotation)">
-                <span class="glyphicon-remove"></span>
+                <span class="glyphicon glyphicon-remove-circle"></span>
                 @Messages("interface.cancel")
             </button>
         </div>

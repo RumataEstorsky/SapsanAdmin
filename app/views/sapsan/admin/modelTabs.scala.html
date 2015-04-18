@@ -15,7 +15,7 @@
     icon = "glyphicon-plus",
     classes = "icon icon new_collection_link" + " active".when(active == "addNew")
 )
-
+@*
 @nav.adm1(title = Messages("admin.list.export"),
     url = controllers.sa.routes.Admin.exportConfig(model.toCNotation),
     icon = "glyphicon-share",
@@ -29,6 +29,8 @@
         classes = "icon history_index_collection_link"  + " active".when(active == "history")
     )
 }
+*@
+
 @content
 
 

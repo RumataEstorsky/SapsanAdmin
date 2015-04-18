@@ -1,7 +1,11 @@
 package sapsan.schema
 
 //import play.db.jpa.JPA
-import sapsan.annotation.Label
+
+
+import java.lang.reflect.{Field => ReflectField}
+import play.api.i18n.Messages
+import sapsan.annotation.SapsanField
 import scala.collection.mutable.LinkedHashMap
 import sapsan.common.Notation
 import com.avaje.ebean.Ebean
@@ -13,9 +17,12 @@ class Model(val clazz: Class[_]) extends Ordered[Model] {
     val name = clazz.getSimpleName
 
     /** Название для пользователей */
-    lazy val label =
-      if(clazz.getAnnotation(classOf[Label]) == null) name
-      else clazz.getAnnotation(classOf[Label]).value
+    lazy val label = {
+      val key = "model." + name
+      if(Messages.isDefinedAt(key)) Messages(key)
+      else name
+    }
+
 
     /** JPA-аннотация модели @Table (описывает свойства таблицы) */
     private [this] lazy val tableAnn = clazz.getAnnotation(classOf[javax.persistence.Table])
@@ -33,17 +40,20 @@ class Model(val clazz: Class[_]) extends Ordered[Model] {
     //TODO Hibernate http://stackoverflow.com/questions/1042798/retrieving-the-inherited-attribute-names-values-using-java-reflection
     val isModel =
       clazz.getAnnotation(classOf[javax.persistence.Entity]) != null &&
-      clazz.getFields.size > 1 &&
+      clazz.getFields.size > 1 //&&
       hasPrimary
 
-    /** Поля моделей */
-    lazy val fields = clazz
-      .getFields
-      .filter(_.getName != "find")
-      .map { f => //TODO
-      val field = new Field(this, f)
-      (field.toCNotation, field)
+    def getAllFields(c: Class[_], fields: Array[ReflectField] = Array() ) : Array[ReflectField]  =
+        if(c.getSuperclass == null) fields ++ c.getDeclaredFields.filter(isNeedField _)
+        else fields ++ getAllFields(c.getSuperclass, c.getDeclaredFields.filter(isNeedField _))
+
+    def isNeedField(f: ReflectField) = f.getAnnotation(classOf[SapsanField]) != null
+
+    lazy val fields = getAllFields(clazz).map{ f =>
+        val field = new Field(this, f)
+        (field.toCNotation, field)
     }.toMap
+
 
     /** Название в Си-нотации (для применения в виде идентификаторов на сайте) */
     val toCNotation = Notation.camelToC(name)
@@ -80,7 +90,6 @@ class Model(val clazz: Class[_]) extends Ordered[Model] {
     def fieldsForGrid = fields.filter(f => !(f._2.isManyToMany || f._2.isOneToMany))
 
     val maxGridColumns = 6
-    //def fields
 
     def hasPrimary = fields.exists(_._2.isPrimary)
     /** Возвращает первую колонку, которая является первичным ключом */

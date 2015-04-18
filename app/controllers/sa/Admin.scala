@@ -152,6 +152,7 @@ object Admin extends Controller with Secured {
     /** Реальное удаление записи */
     def delete(model: String, id: Long) = withAuth { _ => implicit request =>
         val m = Schema.models(model)
+        m.delete(id)
         Redirect(routes.Admin.list(m.toCNotation))
     }
 

@@ -2,22 +2,22 @@
 @import views.html.sapsan.admin._
 @import controllers.sa._
 @modelTabs(model, "list") {
-    <li class="dropdown" style="float:right">
-        <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-            @Messages("admin.list.selectedItems")<b class="caret"></b>
-        </a>
-        <ul class="dropdown-menu" style="left:auto; right:0;">
-            <li><a href="#" onclick="jQuery("#bulk_action").val("export"); jQuery("#bulk_form").submit(); return false;">@Messages("admin.list.exportB")</a></li>
-            <li><a href="#" onclick="jQuery("#bulk_action").val("bulk_delete"); jQuery("#bulk_form").submit(); return false;">@Messages("admin.list.deleteB")</a></li>
-        </ul>
-    </li>
-    <li class="dropdown" style="float:right">
-        <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-            @Messages("admin.list.addFilter")
-            <b class="caret"></b>
-        </a>
-        @filterMenu(model)
-    </li>
+    @*<li class="dropdown" style="float:right">*@
+        @*<a class="dropdown-toggle" data-toggle="dropdown" href="#">*@
+            @*@Messages("admin.list.selectedItems")<b class="caret"></b>*@
+        @*</a>*@
+        @*<ul class="dropdown-menu" style="left:auto; right:0;">*@
+            @*<li><a href="#" onclick="jQuery("#bulk_action").val("export"); jQuery("#bulk_form").submit(); return false;">@Messages("admin.list.exportB", model.label)</a></li>*@
+            @*<li><a href="#" onclick="jQuery("#bulk_action").val("bulk_delete"); jQuery("#bulk_form").submit(); return false;">@Messages("admin.list.deleteB", model.label)</a></li>*@
+        @*</ul>*@
+    @*</li>*@
+    @*<li class="dropdown" style="float:right">*@
+        @*<a class="dropdown-toggle" data-toggle="dropdown" href="#">*@
+            @*@Messages("admin.list.addFilter")*@
+            @*<b class="caret"></b>*@
+        @*</a>*@
+        @*@filterMenu(model)*@
+    @*</li>*@
 }
 
 <div id="list">
@@ -49,9 +49,9 @@
     </script>
     <style>
 </style>
-    @easyFilter(model) {
-        <span style="float : right"><a href="@routes.Admin.exportConfig(model.toCNotation)" class="btn btn-info">@Messages("admin.list.exportB")</a></span>
-    }
+    @*@easyFilter(model) {*@
+        @*<span style="float : right"><a href="@routes.Admin.exportConfig(model.toCNotation)" class="btn btn-info">@Messages("admin.list.exportB", model.label)</a></span>*@
+    @*}*@
 
 
     <form accept-charset="UTF-8" action="@routes.Admin.bulkAction(model.toCNotation)" class="form" id="bulk_form" method="POST">
@@ -74,7 +74,7 @@
                 @for(item <- page.getList) {
                     @defining(model.extractId(item)) { id =>
                     <tr>
-                        <td><input id="bulk_ids_@id" name="bulk_ids[]" type="checkbox" value="@id" /></td>
+                        <td><input name="bulk_ids[]" type="checkbox" value="@id" /></td>
                         @for((name, field) <- model.fieldsForGrid) {
                             @if(field.extract(item) == null) {
                                 <td>-</td>
@@ -91,9 +91,9 @@
                                 @gridButton(routes.Admin.show(model.toCNotation, id), Messages("admin.list.show"), "glyphicon-info-sign")
                                 @gridButton(routes.Admin.edit(model.toCNotation, id), Messages("admin.list.edit"), "glyphicon-pencil")
                                 @gridButton(routes.Admin.deleteConfirm(model.toCNotation, id), Messages("admin.list.delete"), "glyphicon-remove")
-                                @if(play.Play.application.configuration.getBoolean("sapsan.history", true)) {
-                                    @gridButton(routes.Admin.historyRecord(model.toCNotation, id), Messages("admin.list.history"), "glyphicon-book")
-                                }
+@*//                                @if(play.Play.application.configuration.getBoolean("sapsan.history", true)) {*@
+@*//                                    @gridButton(routes.Admin.historyRecord(model.toCNotation, id), Messages("admin.list.history"), "glyphicon-book")*@
+@*//                                }*@
                             </ul>
                         </td>
                     </tr>
