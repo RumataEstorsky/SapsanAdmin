@@ -2,6 +2,7 @@
 @import views.html.sapsan.admin._
 @import controllers.sa._
 @modelTabs(model, "list") {
+
     @*<li class="dropdown" style="float:right">*@
         @*<a class="dropdown-toggle" data-toggle="dropdown" href="#">*@
             @*@Messages("admin.list.selectedItems")<b class="caret"></b>*@
@@ -49,9 +50,15 @@
     </script>
     <style>
 </style>
+<<<<<<< HEAD
     @*@easyFilter(model) {*@
         @*<span style="float : right"><a href="@routes.Admin.exportConfig(model.toCNotation)" class="btn btn-info">@Messages("admin.list.exportB", model.label)</a></span>*@
     @*}*@
+=======
+    @easyFilter(model) {
+        <span style="float : right"><a href="@routes.Admin.exportConfig(model.toCNotation)" class="btn btn-info">@Messages("admin.list.exportB", model.label)</a></span>
+    }
+>>>>>>> 4bab065d883e598efb2ce0ee3dd48919db4efbe8
 
 
     <form accept-charset="UTF-8" action="@routes.Admin.bulkAction(model.toCNotation)" class="form" id="bulk_form" method="POST">

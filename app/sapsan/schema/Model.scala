@@ -1,11 +1,9 @@
 package sapsan.schema
 
-//import play.db.jpa.JPA
-
-
 import java.lang.reflect.{Field => ReflectField}
-import play.api.i18n.Messages
+
 import sapsan.annotation.SapsanField
+import play.api.i18n.Messages
 import scala.collection.mutable.LinkedHashMap
 import sapsan.common.Notation
 import com.avaje.ebean.Ebean

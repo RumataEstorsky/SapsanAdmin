@@ -1,10 +1,10 @@
 package sapsan.schema
 
-import java.awt
 
+import sapsan.common.{HtmlInputComponent, Notation}
 import play.api.i18n.Messages
 import sapsan.annotation.SapsanField
-import sapsan.common.{HtmlInputComponent, Notation}
+import sapsan.common.Notation
 import java.lang.reflect.{Field => JavaField}
 import play.Logger
 import java.text.SimpleDateFormat
