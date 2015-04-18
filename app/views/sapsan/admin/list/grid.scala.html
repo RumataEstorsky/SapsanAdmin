@@ -50,16 +50,9 @@
     </script>
     <style>
 </style>
-<<<<<<< HEAD
     @*@easyFilter(model) {*@
         @*<span style="float : right"><a href="@routes.Admin.exportConfig(model.toCNotation)" class="btn btn-info">@Messages("admin.list.exportB", model.label)</a></span>*@
     @*}*@
-=======
-    @easyFilter(model) {
-        <span style="float : right"><a href="@routes.Admin.exportConfig(model.toCNotation)" class="btn btn-info">@Messages("admin.list.exportB", model.label)</a></span>
-    }
->>>>>>> 4bab065d883e598efb2ce0ee3dd48919db4efbe8
-
 
     <form accept-charset="UTF-8" action="@routes.Admin.bulkAction(model.toCNotation)" class="form" id="bulk_form" method="POST">
         <input id="bulk_action" name="bulk_action" type="hidden" />
